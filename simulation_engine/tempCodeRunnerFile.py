@@ -1,1 +1,0 @@
-python -m simulation_engine.simulator_test

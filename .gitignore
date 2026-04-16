@@ -2,6 +2,7 @@
 
 # Exclude datasets folder (large files)
 Datasets/
+Dataset/*.csv
 
 # Byte-compiled / cache
 __pycache__/
@@ -13,6 +14,15 @@ __pycache__/
 # Output and results (optional, comment out if you want to keep these tracked)
 # outputs/
 # results/
+outputs/*.csv
+outputs/*.npy
+
+# Synthetic load generated artifacts
+synthetic_load/*.pkl
+synthetic_load/*.npy
+synthetic_load/metadata.json
+synthetic_load/*.png
+synthetic_load/__pycache__/
 
 # OS files
 .DS_Store
