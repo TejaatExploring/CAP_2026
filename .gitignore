@@ -1,0 +1,22 @@
+# .gitignore
+
+# Exclude datasets folder (large files)
+Datasets/
+
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Output and results (optional, comment out if you want to keep these tracked)
+# outputs/
+# results/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/

@@ -1,0 +1,8 @@
+{
+    "total_load_kwh": 261.778,
+    "total_solar_used_kwh": 6.75,
+    "total_grid_energy_kwh": 250.278,
+    "total_battery_discharge_kwh": 4.75,
+    "grid_dependency_percent": 95.61,
+    "recommendation": "Grid Dominant (Increase Solar/Battery recommended)"
+}
