@@ -1,0 +1,2 @@
+# No extra dependencies required.
+# This weather service uses Python standard library only.
