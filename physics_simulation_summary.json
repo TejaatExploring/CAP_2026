@@ -1,0 +1,48 @@
+{
+  "steps": 720,
+  "dt_hours": 1.0,
+  "total_load_kwh": 349.99999999999966,
+  "total_pv_gen_kwh": 216.4357867874731,
+  "total_battery_charge_input_kwh": 102.87617269619854,
+  "total_battery_stored_kwh": 97.73236406138854,
+  "total_battery_discharge_to_load_kwh": 93.79574585831918,
+  "total_grid_import_kwh": 142.67677217389246,
+  "total_grid_export_kwh": 0.03213212348622288,
+  "total_curtailment_kwh": 0.0,
+  "total_unserved_load_kwh": 0.0,
+  "average_soc_pct": 31.118509428803616,
+  "min_soc_pct": 10.0,
+  "max_soc_pct": 95.0,
+  "grid_dependency_pct": 40.7647920496836,
+  "self_sufficiency_pct": 59.23520795031641,
+  "self_consumption_pct": 99.9851539692381,
+  "configuration": {
+    "solar": {
+      "capacity_kw": 2.5,
+      "derate_factor": 0.88,
+      "temp_coeff_per_c": -0.004,
+      "noct_c": 45.0,
+      "reference_cell_temp_c": 25.0,
+      "default_ambient_temp_c": 25.0,
+      "wind_cooling_coeff_c_per_mps": 0.6
+    },
+    "battery": {
+      "capacity_kwh": 5.0,
+      "soc_initial": 0.3,
+      "soc_min": 0.1,
+      "soc_max": 0.95,
+      "max_charge_kw": 2.0,
+      "max_discharge_kw": 2.0,
+      "charge_efficiency": 0.95,
+      "discharge_efficiency": 0.95
+    },
+    "grid": {
+      "max_import_kw": 1000000000.0,
+      "max_export_kw": 1000000000.0
+    },
+    "simulation": {
+      "dt_hours": 1.0,
+      "align_mode": "by_order"
+    }
+  }
+}

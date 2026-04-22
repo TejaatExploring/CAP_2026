@@ -10,18 +10,19 @@ This module fetches hourly solar irradiance + weather context data from NASA POW
 - CLRSKY_SFC_SW_DWN -> clear-sky GHI (kWh/m^2/hour)
 - WS10M -> wind speed at 10m (m/s)
 - PRECTOTCORR -> precipitation (mm/hour)
-- Derived weather_label -> night/sunny/partly_cloudy/cloudy/rainy/windy
-
-## Files
-
-- weather_service/nasa_power_service.py: API client + parsing + retry logic
-- weather_service/fetch_weather.py: CLI runner
 
 ## Run
 
 From project root:
 
-python3 weather_service/fetch_weather.py --lat 28.3670 --lon 79.4304 --start 2021-01-01 --end 2021-01-30 --out outputs/weather_hourly.csv
+```bash
+python3 weather_service/fetch_weather.py \
+	--lat 28.3670 --lon 79.4304 \
+	--start 2021-01-01 --days 30 \
+	--out outputs/weather_hourly_30d.csv
+```
+
+If you omit `--end`, the script uses `--days` (default `30`) starting from `--start`.
 
 ## Output
 
