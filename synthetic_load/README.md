@@ -117,18 +117,3 @@ df = pd.read_csv('outputs/synthetic_30d_hourly.csv')
 print('rows=', len(df), 'days=', df['day'].nunique(), 'hours/day ok=', df.groupby('day')['hour'].nunique().eq(24).all())
 PY
 
-## Team Demo Animation (Separate from Core Code)
-
-Use this standalone script to visualize pipeline progress while stages run:
-
-python3 synthetic_load/pipeline_animation_demo.py --days 30 --target-kwh 350 --target-mode monthly
-
-Notes:
-- This does not modify core Brain 1a logic; it only orchestrates and visualizes execution.
-- On Linux without GUI display, run terminal mode:
-
-python3 synthetic_load/pipeline_animation_demo.py --days 30 --target-kwh 350 --no-gui
-
-- For a fast presentation using existing artifacts, skip retraining:
-
-python3 synthetic_load/pipeline_animation_demo.py --days 30 --target-kwh 350 --skip-train

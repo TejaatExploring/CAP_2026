@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brain 1a Pipeline Animation</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="top">
+        <h1>Brain 1a Live Animation</h1>
+        <div class="controls">
+          <label>Days <input id="days" type="number" value="30" min="1" /></label>
+          <label>Monthly kWh <input id="targetKwh" type="number" value="350" min="1" step="0.1" /></label>
+          <label>Mode
+            <select id="targetMode">
+              <option value="monthly" selected>monthly</option>
+              <option value="total">total</option>
+            </select>
+          </label>
+          <label>K <input id="k" type="number" value="9" min="2" max="20" /></label>
+          <label><input id="skipTrain" type="checkbox" /> Skip train</label>
+          <button id="runBtn">Run Demo</button>
+        </div>
+      </header>
+
+      <section id="pipeline" class="pipeline"></section>
+
+      <section class="card">
+        <h2>What Is Happening Inside</h2>
+        <div id="stageExplain" class="explain">Run the pipeline to see stage internals.</div>
+        <div id="detailStats" class="detail-stats"></div>
+        <div id="detailViz" class="detail-viz"></div>
+      </section>
+
+      <section class="cards">
+        <article class="card">
+          <h2>Validation Metrics</h2>
+          <div class="grid2">
+            <div>Synthetic MAPE: <b id="synMape">-</b></div>
+            <div>Synthetic RMSE: <b id="synRmse">-</b></div>
+            <div>Baseline MAPE: <b id="baseMape">-</b></div>
+            <div>Baseline RMSE: <b id="baseRmse">-</b></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Generation Summary</h2>
+          <div class="grid2">
+            <div>Rows: <b id="rows">-</b></div>
+            <div>Days: <b id="outDays">-</b></div>
+            <div>Total kWh: <b id="totalKwh">-</b></div>
+            <div>Status: <b id="runStatus">Idle</b></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="card">
+        <h2>Live Logs</h2>
+        <pre id="logs" class="logs"></pre>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
