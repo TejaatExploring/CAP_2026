@@ -28,9 +28,9 @@ python3 synthetic_load/markov_model.py --laplace 1.0
 
 python3 synthetic_load/validate_model.py --train-ratio 0.8 --seed 42 --no-plot
 
-5. Generate final synthetic output for next modules (24 hours x 30 days):
+5. Generate final synthetic output for next modules (interactive: asks days and monthly kWh):
 
-python3 synthetic_load/generate_synthetic.py --days 30 --seed 42 --noise-scale 0.03 --blend-alpha 0.05 --output outputs/synthetic_30d_hourly.csv
+python3 synthetic_load/generate_synthetic.py
 
 ## Further Use (After Training)
 
@@ -38,13 +38,22 @@ Once training artifacts already exist (kmeans_model.pkl, markov_transition.npy, 
 
 ### A) Generate a new 30-day profile quickly
 
-python3 synthetic_load/generate_synthetic.py --days 30 --seed 42 --noise-scale 0.03 --blend-alpha 0.05 --output outputs/synthetic_30d_hourly.csv
+python3 synthetic_load/generate_synthetic.py
 
 ### B) Generate from user monthly energy input
 
-python3 synthetic_load/generate_synthetic.py --days 30 --seed 42 --noise-scale 0.03 --blend-alpha 0.05 --target-kwh 350 --output outputs/synthetic_30d_hourly.csv
+python3 synthetic_load/generate_synthetic.py --days 30 --seed 42 --noise-scale 0.03 --blend-alpha 0.05 --target-kwh 350 --target-mode monthly --output outputs/synthetic_30d_hourly.csv
 
 Replace 350 with the user monthly energy consumption (kWh).
+
+Note: with target-mode monthly (default), total energy scales by days/30.
+Example: 300 kWh monthly -> 30 days gives 300 kWh, 60 days gives 600 kWh.
+
+If you need an exact total for the full horizon instead, use:
+
+python3 synthetic_load/generate_synthetic.py --days 60 --target-kwh 300 --target-mode total --output outputs/synthetic_30d_hourly.csv
+
+If --days or --target-kwh is omitted, the script asks for input interactively.
 
 ### C) Re-validate without retraining
 
@@ -107,3 +116,19 @@ import pandas as pd
 df = pd.read_csv('outputs/synthetic_30d_hourly.csv')
 print('rows=', len(df), 'days=', df['day'].nunique(), 'hours/day ok=', df.groupby('day')['hour'].nunique().eq(24).all())
 PY
+
+## Team Demo Animation (Separate from Core Code)
+
+Use this standalone script to visualize pipeline progress while stages run:
+
+python3 synthetic_load/pipeline_animation_demo.py --days 30 --target-kwh 350 --target-mode monthly
+
+Notes:
+- This does not modify core Brain 1a logic; it only orchestrates and visualizes execution.
+- On Linux without GUI display, run terminal mode:
+
+python3 synthetic_load/pipeline_animation_demo.py --days 30 --target-kwh 350 --no-gui
+
+- For a fast presentation using existing artifacts, skip retraining:
+
+python3 synthetic_load/pipeline_animation_demo.py --days 30 --target-kwh 350 --skip-train

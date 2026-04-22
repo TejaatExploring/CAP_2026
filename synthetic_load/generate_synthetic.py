@@ -113,6 +113,34 @@ def generate_series_weekday(
     return np.asarray(values, dtype=float)
 
 
+def prompt_positive_int(message: str, default: int) -> int:
+    """Prompt user for a positive integer with default fallback."""
+    while True:
+        raw = input(f"{message} [{default}]: ").strip()
+        if raw == "":
+            return default
+        try:
+            value = int(raw)
+            if value > 0:
+                return value
+        except ValueError:
+            pass
+        print("Please enter a positive integer.")
+
+
+def prompt_positive_float(message: str) -> float:
+    """Prompt user for a positive float."""
+    while True:
+        raw = input(f"{message}: ").strip()
+        try:
+            value = float(raw)
+            if value > 0:
+                return value
+        except ValueError:
+            pass
+        print("Please enter a positive number.")
+
+
 def main() -> None:
     """CLI entrypoint for 24x30 synthetic output generation."""
     parser = argparse.ArgumentParser(description="Generate synthetic hourly load CSV.")
@@ -122,7 +150,7 @@ def main() -> None:
     parser.add_argument("--markov", type=Path, default=DEFAULT_MARKOV_PATH, help="Markov transition path")
     parser.add_argument("--meta", type=Path, default=DEFAULT_META_PATH, help="Metadata path")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUT_PATH, help="Synthetic CSV output path")
-    parser.add_argument("--days", type=int, default=30, help="Number of days to generate")
+    parser.add_argument("--days", type=int, default=None, help="Number of days to generate (prompted if omitted)")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument("--noise-scale", type=float, default=0.03, help="Noise multiplier for variability")
     parser.add_argument(
@@ -131,7 +159,14 @@ def main() -> None:
         default=0.05,
         help="Blend weight for synthetic profile vs historical hourly mean (0..1)",
     )
-    parser.add_argument("--target-kwh", type=float, default=None, help="Optional total kWh scaling target")
+    parser.add_argument("--target-kwh", type=float, default=None, help="Target kWh input (monthly by default)")
+    parser.add_argument(
+        "--target-mode",
+        type=str,
+        choices=["monthly", "total"],
+        default="monthly",
+        help="Interpretation of --target-kwh: monthly scales with days/30, total is exact for full horizon",
+    )
     parser.add_argument(
         "--start-date",
         type=str,
@@ -141,6 +176,19 @@ def main() -> None:
     args = parser.parse_args()
     if not (0.0 <= args.blend_alpha <= 1.0):
         raise ValueError("--blend-alpha must be between 0 and 1")
+
+    if args.days is None:
+        print("Interactive Input")
+        args.days = prompt_positive_int("Enter number of days", default=30)
+
+    if args.target_kwh is None:
+        args.target_kwh = prompt_positive_float("Enter monthly energy consumed (kWh)")
+
+    if args.days <= 0:
+        raise ValueError("--days must be positive")
+
+    if args.target_kwh <= 0:
+        raise ValueError("--target-kwh must be positive")
 
     daily = np.load(args.daily)
     hourly_df = pd.read_csv(args.hourly_input)
@@ -193,10 +241,13 @@ def main() -> None:
     baseline = np.tile(hist_mean, args.days)
     series = args.blend_alpha * series + (1.0 - args.blend_alpha) * baseline
 
-    if args.target_kwh is not None and args.target_kwh > 0:
-        total = float(series.sum())
-        if total > 0:
-            series = series * (args.target_kwh / total)
+    target_total_kwh = float(args.target_kwh)
+    if args.target_mode == "monthly":
+        target_total_kwh = float(args.target_kwh) * (float(args.days) / 30.0)
+
+    total = float(series.sum())
+    if total > 0:
+        series = series * (target_total_kwh / total)
 
     if len(series) != args.days * 24:
         raise RuntimeError("Generated series length mismatch")
@@ -220,6 +271,8 @@ def main() -> None:
     print(f"Rows: {len(out)}")
     print(f"Days: {args.days}")
     print(f"Output: {args.output}")
+    print(f"Target mode: {args.target_mode}")
+    print(f"Target total energy (kWh): {target_total_kwh:.3f}")
     print(f"Total energy (kWh): {out['t_kWh'].sum():.3f}")
 
 
